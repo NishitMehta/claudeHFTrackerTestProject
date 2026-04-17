@@ -1,73 +1,42 @@
-# =============================================================================
-# Travel Price Tracker — Searches Configuration
-# =============================================================================
-#
-# This file lists every flight and hotel search you want tracked.
-# The collector runs once a day, queries each one via SerpAPI (Google
-# Flights / Google Hotels), and appends results to the CSVs in data/.
-#
-# To add a new search, copy a block below and change the values.
-# To stop tracking something, delete the block (or comment it out with #).
-#
-# IMPORTANT — costs against your SerpAPI free tier (250 searches/month):
-#   - Each FLIGHT block = 1 API call per day  = ~30/month
-#   - Each HOTEL block  = 1 API call per day  = ~30/month
-# So you can safely run ~8 searches total before hitting the free limit.
-#
-# Dates must be YYYY-MM-DD and in the future.
-# Airport codes: BOM=Mumbai, DEL=Delhi, BLR=Bangalore, MAA=Chennai,
-#   AMD=Ahmedabad, GOI=Goa-Dabolim, GOX=Goa-Mopa, DXB=Dubai, SIN=Singapore,
-#   BKK=Bangkok, LHR=London, JFK=New York.
-#
-# =============================================================================
-
+# Edited from dashboard at 2026-04-17T10:03:43.003Z
 flights:
-
-  - id: bom-dxb-jun                       # short unique id, no spaces
-    nickname: "Mumbai → Dubai (June trip)"
+  - id: bom-dxb-jun
+    nickname: Mumbai → Dubai (June trip)
     departure_id: BOM
     arrival_id: DXB
-    outbound_date: 2026-06-15
-    return_date: 2026-06-22               # remove this line for one-way
+    outbound_date: "2026-06-15"
+    return_date: "2026-06-22"
     adults: 1
-    travel_class: ECONOMY                  # ECONOMY | PREMIUM_ECONOMY | BUSINESS | FIRST
+    travel_class: ECONOMY
     currency: INR
-    alert_below: 25000                     # open a GitHub Issue if total drops below this
-    max_results: 5                         # how many of the cheapest offers to log
-
+    alert_below: 25000
+    max_results: 5
   - id: del-sin-aug
-    nickname: "Delhi → Singapore (August)"
+    nickname: Delhi → Singapore (August)
     departure_id: DEL
     arrival_id: SIN
-    outbound_date: 2026-08-10
-    return_date: 2026-08-20
+    outbound_date: "2026-08-10"
+    return_date: "2026-08-20"
     adults: 2
     travel_class: ECONOMY
     currency: INR
     alert_below: 60000
     max_results: 5
-
 hotels:
-
-  # Hotel queries are natural-language strings — be specific or general:
-  #   "hotels in Goa, India"             ← whole-city search
-  #   "hotels in Anjuna, Goa"            ← neighbourhood
-  #   "Taj Resort & Convention Centre"   ← single property by name
   - id: goa-dec
-    nickname: "Goa (December break)"
-    query: "hotels in Goa, India"
-    check_in: 2026-12-20
-    check_out: 2026-12-25
+    nickname: Goa (December break)
+    query: hotels in Goa, India
+    check_in: "2026-12-20"
+    check_out: "2026-12-25"
     adults: 2
     currency: INR
     alert_below: 8000
     max_results: 10
-
   - id: jaipur-nov
-    nickname: "Jaipur (November weekend)"
-    query: "hotels in Jaipur, India"
-    check_in: 2026-11-14
-    check_out: 2026-11-16
+    nickname: Jaipur (November weekend)
+    query: hotels in Jaipur, India
+    check_in: "2026-11-14"
+    check_out: "2026-11-16"
     adults: 2
     currency: INR
     alert_below: 5000
