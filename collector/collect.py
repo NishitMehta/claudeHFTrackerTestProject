@@ -37,11 +37,13 @@ def load_searches() -> dict:
         return yaml.safe_load(f) or {}
 
 
-def is_future(d: str) -> bool:
-    try:
-        return datetime.strptime(d, "%Y-%m-%d").date() >= date.today()
-    except ValueError:
-        return False
+def is_future(d) -> bool:
+       try:
+           if isinstance(d, date):
+               return d >= date.today()
+           return datetime.strptime(str(d), "%Y-%m-%d").date() >= date.today()
+       except (ValueError, TypeError):
+           return False
 
 
 def _previous_min(rows: list[dict]) -> dict[str, float]:
