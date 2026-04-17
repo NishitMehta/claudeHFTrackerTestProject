@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Travel Price Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+<style>
+  :root {
+    --ink: #1a1410; --paper: #f4ede0; --paper-dark: #ebe0cc; --rule: #1a1410;
+    --accent: #c8401c; --accent-soft: #e8a48e; --good: #2d5a2d; --bad: #c8401c;
+    --muted: #6b5d4e;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; background: var(--paper); color: var(--ink);
+    font-family: 'Fraunces', Georgia, serif;
+  }
+  body {
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(200,64,28,.04) 0%, transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(45,90,45,.04) 0%, transparent 40%);
+    min-height: 100vh; padding: 0 0 6rem 0;
+  }
+  .masthead {
+    border-bottom: 3px double var(--rule);
+    padding: 2.4rem 3rem 1.2rem 3rem;
+    display: flex; align-items: baseline; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .masthead h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 800; letter-spacing: -0.03em;
+    margin: 0; line-height: 0.95; font-style: italic;
+  }
+  .masthead .meta {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;
+    text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted);
+    text-align: right;
+  }
+  .container { padding: 0 3rem; max-width: 1400px; margin: 0 auto; }
+  .section-rule {
+    display: flex; align-items: center; gap: 1.5rem;
+    margin: 3rem 0 1.5rem 0;
+  }
+  .section-rule h2 {
+    font-size: 0.85rem; font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase; letter-spacing: 0.2em; margin: 0; white-space: nowrap;
+  }
+  .section-rule .line { flex: 1; height: 1px; background: var(--rule); }
+  .section-rule button.btn-text {
+    background: var(--ink); color: var(--paper); border: 1.5px solid var(--ink);
+    padding: 0.4rem 0.9rem; font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.15em;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .section-rule button.btn-text:hover { background: var(--accent); border-color: var(--accent); }
+  .grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 1.5rem;
+  }
+  .card {
+    background: var(--paper); border: 1.5px solid var(--ink);
+    padding: 1.5rem; position: relative; transition: transform 0.15s ease;
+  }
+  .card:hover { transform: translateY(-2px); }
+  .card .nickname {
+    font-size: 1.4rem; font-weight: 600; line-height: 1.15;
+    margin: 0 0 0.25rem 0; font-style: italic;
+  }
+  .card .id {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+    text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted); margin-bottom: 1rem;
+  }
+  .stats {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
+    border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink);
+    margin: 1rem 0;
+  }
+  .stat { padding: 0.7rem 0.5rem; border-right: 1px solid var(--ink); text-align: center; }
+  .stat:last-child { border-right: none; }
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.6rem;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--muted); margin-bottom: 0.25rem;
+  }
+  .stat-value { font-size: 1.15rem; font-weight: 600; }
+  .stat-value.good { color: var(--good); } .stat-value.bad { color: var(--bad); }
+  .chart-wrap { position: relative; height: 180px; margin-top: 0.5rem; }
+  .empty {
+    text-align: center; padding: 4rem 2rem;
+    border: 1px dashed var(--rule); color: var(--muted);
+  }
+  .empty h3 { font-style: italic; font-weight: 600; font-size: 1.5rem; }
+  footer {
+    text-align: center; margin-top: 4rem; padding-top: 2rem;
+    border-top: 1px solid var(--rule);
+    font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+    text-transform: uppercase; letter-spacing: 0.15em; color: var(--muted);
+  }
+  .delta-arrow { font-size: 0.85em; margin-right: 0.15em; }
+
+  /* ============ EDITOR PANEL ============ */
+  #editor-overlay {
+    position: fixed; inset: 0; background: rgba(26,20,16,0.55);
+    backdrop-filter: blur(4px); z-index: 100; display: none;
+    overflow-y: auto; padding: 2rem;
+  }
+  #editor-overlay.open { display: block; }
+  .editor-panel {
+    background: var(--paper); max-width: 900px; margin: 1rem auto;
+    border: 2px solid var(--ink); box-shadow: 12px 12px 0 var(--ink);
+    padding: 2rem;
+  }
+  .editor-panel h2 {
+    font-style: italic; font-weight: 800; font-size: 2.2rem;
+    margin: 0 0 0.25rem 0; letter-spacing: -0.02em;
+  }
+  .editor-panel .subhead {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+    text-transform: uppercase; letter-spacing: 0.15em;
+    color: var(--muted); margin-bottom: 1.5rem;
+  }
+  .editor-panel .toolbar {
+    display: flex; gap: 0.5rem; justify-content: flex-end;
+    margin-bottom: 1.5rem; flex-wrap: wrap;
+  }
+  .editor-panel .toolbar button {
+    background: var(--paper); color: var(--ink);
+    border: 1.5px solid var(--ink); padding: 0.5rem 1rem;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .editor-panel .toolbar button:hover { background: var(--ink); color: var(--paper); }
+  .editor-panel .toolbar button.primary {
+    background: var(--accent); color: white; border-color: var(--accent);
+  }
+  .editor-panel .toolbar button.primary:hover { background: var(--ink); border-color: var(--ink); }
+  .editor-panel .toolbar button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .token-section {
+    background: var(--paper-dark); border: 1.5px solid var(--ink);
+    padding: 1rem; margin-bottom: 1.5rem; font-size: 0.95rem;
+  }
+  .token-section.has-token {
+    background: rgba(45,90,45,0.08); border-color: var(--good);
+  }
+  .token-section label {
+    display: block; font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.12em;
+    margin-bottom: 0.4rem;
+  }
+  .token-section input[type=password] {
+    width: 100%; padding: 0.55rem; border: 1.5px solid var(--ink);
+    background: var(--paper); font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+  }
+  .token-section .hint {
+    font-size: 0.85rem; color: var(--muted);
+    margin-top: 0.5rem; line-height: 1.4;
+  }
+  .token-section .hint a { color: var(--accent); }
+
+  .ed-section-title {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.78rem;
+    text-transform: uppercase; letter-spacing: 0.18em;
+    margin: 1.5rem 0 0.75rem 0;
+    border-bottom: 1px solid var(--ink); padding-bottom: 0.4rem;
+  }
+  .ed-row {
+    border: 1.5px solid var(--ink); padding: 1rem;
+    margin-bottom: 0.75rem; background: var(--paper); position: relative;
+  }
+  .ed-row .row-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 0.7rem; padding-bottom: 0.5rem;
+    border-bottom: 1px dashed var(--rule);
+  }
+  .ed-row .row-head .row-id {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+    text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted);
+  }
+  .ed-row .row-head button.del {
+    background: transparent; border: 1px solid var(--bad); color: var(--bad);
+    padding: 0.2rem 0.6rem; font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem; text-transform: uppercase; cursor: pointer;
+    letter-spacing: 0.12em;
+  }
+  .ed-row .row-head button.del:hover { background: var(--bad); color: white; }
+  .ed-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.6rem 0.8rem;
+  }
+  .ed-grid .field { display: flex; flex-direction: column; }
+  .ed-grid .field.wide { grid-column: span 2; }
+  .ed-grid label {
+    font-family: 'JetBrains Mono', monospace; font-size: 0.62rem;
+    text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--muted); margin-bottom: 0.2rem;
+  }
+  .ed-grid input, .ed-grid select {
+    padding: 0.4rem 0.55rem; border: 1px solid var(--ink); background: var(--paper);
+    font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: var(--ink);
+  }
+  .ed-grid input:focus, .ed-grid select:focus {
+    outline: 2px solid var(--accent); outline-offset: -1px;
+  }
+
+  .add-btn {
+    width: 100%; padding: 0.7rem; background: var(--paper); color: var(--ink);
+    border: 1.5px dashed var(--ink); font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.12em;
+    cursor: pointer; margin-top: 0.5rem; transition: all 0.15s;
+  }
+  .add-btn:hover { background: var(--ink); color: var(--paper); border-style: solid; }
+
+  .save-status {
+    margin-top: 1rem; padding: 0.8rem; border: 1.5px solid var(--ink);
+    font-family: 'JetBrains Mono', monospace; font-size: 0.85rem;
+    display: none; white-space: pre-wrap;
+  }
+  .save-status.show { display: block; }
+  .save-status.ok {
+    background: rgba(45,90,45,0.12); border-color: var(--good); color: var(--good);
+  }
+  .save-status.err {
+    background: rgba(200,64,28,0.12); border-color: var(--bad); color: var(--bad);
+  }
+
+  .save-banner {
+    background: var(--ink); color: var(--paper); padding: 0.75rem 1rem;
+    margin-top: 1rem; font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem; line-height: 1.5;
+  }
+  .save-banner a { color: var(--accent-soft); }
+
+  @media (max-width: 600px) {
+    .masthead, .container { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .grid { grid-template-columns: 1fr; }
+    .editor-panel { padding: 1.25rem; box-shadow: 6px 6px 0 var(--ink); }
+    #editor-overlay { padding: 0.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <h1>Travel<br/>Price Tracker</h1>
+  <div class="meta">
+    Vol. 01 &middot; Issue 2026.107<br/>
+    Updated 2026-04-17 09:27 UTC<br/>
+    0 flights &middot; 0 hotels
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="section-rule">
+    <h2>✈ Flights</h2>
+    <div class="line"></div>
+    <button class="btn-text" onclick="openEditor()">Edit searches</button>
+  </div>
+
+  <div class="empty"><h3>No data yet.</h3><p>Add flight searches in <code>searches.yaml</code> and wait for the next collector run.</p></div>
+
+  <div class="section-rule">
+    <h2>🏨 Hotels</h2>
+    <div class="line"></div>
+  </div>
+
+  <div class="empty"><h3>No data yet.</h3><p>Add hotel searches in <code>searches.yaml</code> and wait for the next collector run.</p></div>
+
+  <footer>
+    Generated by collector &middot; Data via SerpAPI
+  </footer>
+</div>
+
+<!-- ============ EDITOR PANEL ============ -->
+<div id="editor-overlay" onclick="if(event.target===this)closeEditor()">
+  <div class="editor-panel">
+    <h2>Edit your searches</h2>
+    <div class="subhead">Changes commit to <code>searches.yaml</code> in your GitHub repo</div>
+
+    <div id="token-section" class="token-section">
+      <label for="gh-token">GitHub Personal Access Token</label>
+      <input type="password" id="gh-token" placeholder="github_pat_..." autocomplete="off" />
+      <div class="hint">
+        One-time setup &mdash; saved in this browser only.
+        Token needs <strong>Contents: Read &amp; Write</strong> on this repo.
+        <a href="https://github.com/settings/personal-access-tokens/new" target="_blank">Create one here</a>
+        (Repository access &rarr; Only select repositories &rarr; pick <code>REPO</code>;
+        under Repository permissions, set Contents to Read and write).
+      </div>
+    </div>
+
+    <div class="ed-section-title">Flights</div>
+    <div id="flights-list"></div>
+    <button class="add-btn" onclick="addFlight()">+ Add flight search</button>
+
+    <div class="ed-section-title">Hotels</div>
+    <div id="hotels-list"></div>
+    <button class="add-btn" onclick="addHotel()">+ Add hotel search</button>
+
+    <div class="toolbar" style="margin-top:1.5rem;">
+      <button onclick="forgetToken()" id="btn-forget" style="display:none;">Forget token</button>
+      <button onclick="closeEditor()">Cancel</button>
+      <button class="primary" onclick="saveSearches()" id="btn-save">Save &amp; commit</button>
+    </div>
+
+    <div id="save-status" class="save-status"></div>
+
+    <div class="save-banner">
+      💡 After saving, your changes are live in the repo immediately,
+      but new prices are only collected on the next scheduled run (daily at 09:00 IST).
+      To see new searches in action right away, go to your repo's
+      <a href="https://github.com/OWNER/REPO/actions" target="_blank">Actions tab</a>
+      and trigger the workflow manually.
+    </div>
+  </div>
+</div>
+
+<script>
+const flightSeries = [];
+const hotelSeries = [];
+const REPO_FULL = "OWNER/REPO";
+const CURRENT_YAML = "# =============================================================================\n# Travel Price Tracker \u2014 Searches Configuration\n# =============================================================================\n#\n# This file lists every flight and hotel search you want tracked.\n# The collector runs once a day, queries each one via SerpAPI (Google\n# Flights / Google Hotels), and appends results to the CSVs in data/.\n#\n# To add a new search, copy a block below and change the values.\n# To stop tracking something, delete the block (or comment it out with #).\n#\n# IMPORTANT \u2014 costs against your SerpAPI free tier (250 searches/month):\n#   - Each FLIGHT block = 1 API call per day  = ~30/month\n#   - Each HOTEL block  = 1 API call per day  = ~30/month\n# So you can safely run ~8 searches total before hitting the free limit.\n#\n# Dates must be YYYY-MM-DD and in the future.\n# Airport codes: BOM=Mumbai, DEL=Delhi, BLR=Bangalore, MAA=Chennai,\n#   AMD=Ahmedabad, GOI=Goa-Dabolim, GOX=Goa-Mopa, DXB=Dubai, SIN=Singapore,\n#   BKK=Bangkok, LHR=London, JFK=New York.\n#\n# =============================================================================\n\nflights:\n\n  - id: bom-dxb-jun                       # short unique id, no spaces\n    nickname: \"Mumbai \u2192 Dubai (June trip)\"\n    departure_id: BOM\n    arrival_id: DXB\n    outbound_date: 2026-06-15\n    return_date: 2026-06-22                # remove this line for one-way\n    adults: 1\n    travel_class: ECONOMY                  # ECONOMY | PREMIUM_ECONOMY | BUSINESS | FIRST\n    currency: INR\n    alert_below: 25000                     # open a GitHub Issue if total drops below this\n    max_results: 5                         # how many of the cheapest offers to log\n\n  - id: del-sin-aug\n    nickname: \"Delhi \u2192 Singapore (August)\"\n    departure_id: DEL\n    arrival_id: SIN\n    outbound_date: 2026-08-10\n    return_date: 2026-08-20\n    adults: 2\n    travel_class: ECONOMY\n    currency: INR\n    alert_below: 60000\n    max_results: 5\n\nhotels:\n\n  # Hotel queries are natural-language strings \u2014 be specific or general:\n  #   \"hotels in Goa, India\"             \u2190 whole-city search\n  #   \"hotels in Anjuna, Goa\"            \u2190 neighbourhood\n  #   \"Taj Resort & Convention Centre\"   \u2190 single property by name\n  - id: goa-dec\n    nickname: \"Goa (December break)\"\n    query: \"hotels in Goa, India\"\n    check_in: 2026-12-20\n    check_out: 2026-12-25\n    adults: 2\n    currency: INR\n    alert_below: 8000\n    max_results: 10\n\n  - id: jaipur-nov\n    nickname: \"Jaipur (November weekend)\"\n    query: \"hotels in Jaipur, India\"\n    check_in: 2026-11-14\n    check_out: 2026-11-16\n    adults: 2\n    currency: INR\n    alert_below: 5000\n    max_results: 10\n";
+const TOKEN_KEY = "tpt_github_token_v1";
+
+function renderChart(canvasId, series, accentColor) {
+  const ctx = document.getElementById(canvasId);
+  if (!ctx) return;
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: series.labels,
+      datasets: [{
+        data: series.data, borderColor: accentColor,
+        backgroundColor: accentColor + '20', borderWidth: 2,
+        fill: true, tension: 0.25, pointRadius: 3,
+        pointBackgroundColor: accentColor, pointBorderColor: '#f4ede0',
+        pointBorderWidth: 1.5,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1a1410',
+          titleFont: { family: 'JetBrains Mono', size: 11 },
+          bodyFont: { family: 'JetBrains Mono', size: 11 },
+          padding: 8,
+          callbacks: { label: ctx => ctx.parsed.y.toLocaleString() + ' ' + series.currency }
+        }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { family: 'JetBrains Mono', size: 9 }, color: '#6b5d4e', maxRotation: 0 }, border: { color: '#1a1410' } },
+        y: { grid: { color: 'rgba(26,20,16,0.08)' }, ticks: { font: { family: 'JetBrains Mono', size: 9 }, color: '#6b5d4e', callback: v => v.toLocaleString() }, border: { display: false } }
+      }
+    }
+  });
+}
+flightSeries.forEach(s => renderChart('chart-f-' + s.id, s, '#c8401c'));
+hotelSeries.forEach(s => renderChart('chart-h-' + s.id, s, '#2d5a2d'));
+
+let editorState = { flights: [], hotels: [] };
+
+function loadCurrentSearches() {
+  try {
+    const parsed = jsyaml.load(CURRENT_YAML) || {};
+    editorState.flights = (parsed.flights || []).map(f => normalizeFlight(f));
+    editorState.hotels  = (parsed.hotels  || []).map(h => normalizeHotel(h));
+  } catch (e) {
+    console.error("Could not parse current searches.yaml:", e);
+    editorState = { flights: [], hotels: [] };
+  }
+}
+function toIsoDate(v) {
+  // Convert Date or 'YYYY-MM-DD' string to YYYY-MM-DD
+  if (!v) return '';
+  if (v instanceof Date) return v.toISOString().slice(0, 10);
+  return String(v);
+}
+function normalizeFlight(f) {
+  return {
+    id: f.id || '', nickname: f.nickname || '',
+    departure_id: f.departure_id || '', arrival_id: f.arrival_id || '',
+    outbound_date: toIsoDate(f.outbound_date), return_date: toIsoDate(f.return_date),
+    adults: f.adults ?? 1, travel_class: f.travel_class || 'ECONOMY',
+    currency: f.currency || 'INR',
+    alert_below: f.alert_below ?? 0, max_results: f.max_results ?? 5,
+  };
+}
+function normalizeHotel(h) {
+  return {
+    id: h.id || '', nickname: h.nickname || '', query: h.query || '',
+    check_in: toIsoDate(h.check_in), check_out: toIsoDate(h.check_out),
+    adults: h.adults ?? 2, currency: h.currency || 'INR',
+    alert_below: h.alert_below ?? 0, max_results: h.max_results ?? 10,
+  };
+}
+
+function openEditor() {
+  loadCurrentSearches(); renderEditor();
+  document.getElementById('editor-overlay').classList.add('open');
+  refreshTokenUI();
+}
+function closeEditor() {
+  document.getElementById('editor-overlay').classList.remove('open');
+  document.getElementById('save-status').className = 'save-status';
+}
+function refreshTokenUI() {
+  const token = localStorage.getItem(TOKEN_KEY) || '';
+  document.getElementById('gh-token').value = token;
+  document.getElementById('token-section').classList.toggle('has-token', !!token);
+  document.getElementById('btn-forget').style.display = token ? '' : 'none';
+}
+function forgetToken() {
+  if (!confirm('Remove the saved token from this browser?')) return;
+  localStorage.removeItem(TOKEN_KEY); refreshTokenUI();
+}
+function addFlight() {
+  editorState.flights.push(normalizeFlight({
+    id: 'new-flight-' + Date.now().toString(36),
+    nickname: 'New flight search',
+  }));
+  renderEditor();
+}
+function addHotel() {
+  editorState.hotels.push(normalizeHotel({
+    id: 'new-hotel-' + Date.now().toString(36),
+    nickname: 'New hotel search',
+  }));
+  renderEditor();
+}
+function deleteFlight(idx) {
+  if (!confirm('Delete this flight search? Existing price history is kept.')) return;
+  editorState.flights.splice(idx, 1); renderEditor();
+}
+function deleteHotel(idx) {
+  if (!confirm('Delete this hotel search? Existing price history is kept.')) return;
+  editorState.hotels.splice(idx, 1); renderEditor();
+}
+
+function inputField(label, value, onchange, opts) {
+  opts = opts || {};
+  const wide = opts.wide ? ' wide' : '';
+  const type = opts.type || 'text';
+  const placeholder = opts.placeholder || '';
+  const escVal = String(value == null ? '' : value).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+  return '<div class="field' + wide + '"><label>' + label + '</label>' +
+    '<input type="' + type + '" value="' + escVal + '" placeholder="' + placeholder + '" oninput="' + onchange + '" /></div>';
+}
+function selectField(label, value, options, onchange) {
+  const opts = options.map(o => '<option value="'+o+'"'+(o===value?' selected':'')+'>'+o+'</option>').join('');
+  return '<div class="field"><label>'+label+'</label><select onchange="'+onchange+'">'+opts+'</select></div>';
+}
+
+function renderEditor() {
+  const fHost = document.getElementById('flights-list');
+  fHost.innerHTML = editorState.flights.map((f, i) =>
+    '<div class="ed-row">' +
+      '<div class="row-head">' +
+        '<span class="row-id">' + (f.id || '(no id)') + '</span>' +
+        '<button class="del" onclick="deleteFlight(' + i + ')">Delete</button>' +
+      '</div>' +
+      '<div class="ed-grid">' +
+        inputField('ID (no spaces)', f.id, 'editorState.flights[' + i + '].id=this.value') +
+        inputField('Nickname', f.nickname, 'editorState.flights[' + i + '].nickname=this.value', {wide:true}) +
+        inputField('From (IATA)', f.departure_id, 'editorState.flights[' + i + '].departure_id=this.value.toUpperCase()', {placeholder:'BOM'}) +
+        inputField('To (IATA)', f.arrival_id, 'editorState.flights[' + i + '].arrival_id=this.value.toUpperCase()', {placeholder:'DXB'}) +
+        inputField('Outbound', f.outbound_date, 'editorState.flights[' + i + '].outbound_date=this.value', {type:'date'}) +
+        inputField('Return', f.return_date, 'editorState.flights[' + i + '].return_date=this.value', {type:'date'}) +
+        inputField('Adults', f.adults, 'editorState.flights[' + i + '].adults=parseInt(this.value)||1', {type:'number'}) +
+        selectField('Class', f.travel_class || 'ECONOMY', ['ECONOMY','PREMIUM_ECONOMY','BUSINESS','FIRST'], 'editorState.flights[' + i + '].travel_class=this.value') +
+        inputField('Currency', f.currency, 'editorState.flights[' + i + '].currency=this.value.toUpperCase()', {placeholder:'INR'}) +
+        inputField('Alert below', f.alert_below, 'editorState.flights[' + i + '].alert_below=parseFloat(this.value)||0', {type:'number'}) +
+        inputField('Max results', f.max_results, 'editorState.flights[' + i + '].max_results=parseInt(this.value)||5', {type:'number'}) +
+      '</div>' +
+    '</div>'
+  ).join('') || '<p style="color:var(--muted);font-style:italic;">No flight searches. Add one below.</p>';
+
+  const hHost = document.getElementById('hotels-list');
+  hHost.innerHTML = editorState.hotels.map((h, i) =>
+    '<div class="ed-row">' +
+      '<div class="row-head">' +
+        '<span class="row-id">' + (h.id || '(no id)') + '</span>' +
+        '<button class="del" onclick="deleteHotel(' + i + ')">Delete</button>' +
+      '</div>' +
+      '<div class="ed-grid">' +
+        inputField('ID (no spaces)', h.id, 'editorState.hotels[' + i + '].id=this.value') +
+        inputField('Nickname', h.nickname, 'editorState.hotels[' + i + '].nickname=this.value', {wide:true}) +
+        inputField('Query', h.query, 'editorState.hotels[' + i + '].query=this.value', {wide:true, placeholder:'hotels in Goa, India'}) +
+        inputField('Check-in', h.check_in, 'editorState.hotels[' + i + '].check_in=this.value', {type:'date'}) +
+        inputField('Check-out', h.check_out, 'editorState.hotels[' + i + '].check_out=this.value', {type:'date'}) +
+        inputField('Adults', h.adults, 'editorState.hotels[' + i + '].adults=parseInt(this.value)||2', {type:'number'}) +
+        inputField('Currency', h.currency, 'editorState.hotels[' + i + '].currency=this.value.toUpperCase()', {placeholder:'INR'}) +
+        inputField('Alert below', h.alert_below, 'editorState.hotels[' + i + '].alert_below=parseFloat(this.value)||0', {type:'number'}) +
+        inputField('Max results', h.max_results, 'editorState.hotels[' + i + '].max_results=parseInt(this.value)||10', {type:'number'}) +
+      '</div>' +
+    '</div>'
+  ).join('') || '<p style="color:var(--muted);font-style:italic;">No hotel searches. Add one below.</p>';
+}
+
+function validateState() {
+  const errs = [];
+  const ids = new Set();
+  const isDate = s => /^\d{4}-\d{2}-\d{2}$/.test(s || '');
+  const checkId = (id, kind, idx) => {
+    if (!id || /\s/.test(id)) errs.push(kind + ' #' + (idx+1) + ': id required, no spaces');
+    if (ids.has(id)) errs.push('Duplicate id: ' + id);
+    else ids.add(id);
+  };
+  editorState.flights.forEach((f, i) => {
+    checkId(f.id, 'Flight', i);
+    if (!f.departure_id) errs.push('Flight ' + f.id + ': From (IATA) required');
+    if (!f.arrival_id)   errs.push('Flight ' + f.id + ': To (IATA) required');
+    if (!isDate(f.outbound_date)) errs.push('Flight ' + f.id + ': outbound date invalid');
+    if (f.return_date && !isDate(f.return_date)) errs.push('Flight ' + f.id + ': return date invalid');
+  });
+  editorState.hotels.forEach((h, i) => {
+    checkId(h.id, 'Hotel', i);
+    if (!h.query) errs.push('Hotel ' + h.id + ': query required');
+    if (!isDate(h.check_in))  errs.push('Hotel ' + h.id + ': check-in date invalid');
+    if (!isDate(h.check_out)) errs.push('Hotel ' + h.id + ': check-out date invalid');
+  });
+  return errs;
+}
+
+function buildYaml() {
+  const flights = editorState.flights.map(f => {
+    const o = Object.assign({}, f);
+    if (!o.return_date) delete o.return_date;
+    return o;
+  });
+  const obj = { flights, hotels: editorState.hotels };
+  return jsyaml.dump(obj, { lineWidth: 120, noRefs: true, sortKeys: false, quotingType: '"' });
+}
+
+function setStatus(msg, kind) {
+  const el = document.getElementById('save-status');
+  el.textContent = msg;
+  el.className = 'save-status show ' + (kind || '');
+}
+
+async function saveSearches() {
+  const tokenInput = document.getElementById('gh-token').value.trim();
+  if (tokenInput) localStorage.setItem(TOKEN_KEY, tokenInput);
+  refreshTokenUI();
+  const token = localStorage.getItem(TOKEN_KEY);
+  if (!token) { setStatus('Paste your GitHub token first.', 'err'); return; }
+
+  const errs = validateState();
+  if (errs.length) { setStatus('Fix these first:\n  ' + errs.join('\n  '), 'err'); return; }
+
+  const yamlText = buildYaml();
+  const fullText = '# Edited from dashboard at ' + new Date().toISOString() + '\n' + yamlText;
+
+  const btn = document.getElementById('btn-save');
+  btn.disabled = true; btn.textContent = 'Saving...';
+  setStatus('Talking to GitHub...');
+
+  try {
+    const meta = await fetch(
+      'https://api.github.com/repos/' + REPO_FULL + '/contents/searches.yaml',
+      { headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json' } }
+    );
+    if (!meta.ok) throw new Error('GET failed: ' + meta.status + ' ' + (await meta.text()));
+    const sha = (await meta.json()).sha;
+
+    const b64 = btoa(unescape(encodeURIComponent(fullText)));
+    const put = await fetch(
+      'https://api.github.com/repos/' + REPO_FULL + '/contents/searches.yaml',
+      {
+        method: 'PUT',
+        headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json' },
+        body: JSON.stringify({
+          message: 'Update searches.yaml from dashboard editor',
+          content: b64, sha,
+        })
+      }
+    );
+    if (!put.ok) throw new Error('PUT failed: ' + put.status + ' ' + (await put.text()));
+
+    setStatus('Saved! New searches will be tracked starting on the next collector run.', 'ok');
+  } catch (e) {
+    console.error(e);
+    setStatus('Save failed: ' + e.message, 'err');
+  } finally {
+    btn.disabled = false; btn.textContent = 'Save & commit';
+  }
+}
+</script>
+</body>
+</html>
