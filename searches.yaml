@@ -1,0 +1,71 @@
+# =============================================================================
+# Travel Price Tracker — Searches Configuration
+# =============================================================================
+#
+# This file lists every flight and hotel search you want tracked.
+# The collector runs once a day and queries each one, appending the result
+# to data/prices_flights.csv or data/prices_hotels.csv.
+#
+# To add a new search, copy a block below and change the values.
+# To stop tracking something, delete the block (or comment it out with #).
+#
+# IMPORTANT: dates must be in YYYY-MM-DD format and must be in the future.
+# The collector will skip and warn about any past dates.
+#
+# Currency: any 3-letter ISO code (INR, USD, EUR, AED, GBP, ...).
+# Indian airport codes: BOM=Mumbai, DEL=Delhi, BLR=Bangalore, MAA=Chennai,
+#   AMD=Ahmedabad, STV=Surat, GOI=Goa (Dabolim), GOX=Goa (Mopa).
+# International examples: DXB=Dubai, SIN=Singapore, BKK=Bangkok,
+#   LHR=London Heathrow, JFK=New York JFK.
+#
+# =============================================================================
+
+flights:
+
+  - id: bom-dxb-jun                       # short unique id, no spaces
+    nickname: "Mumbai → Dubai (June trip)"
+    origin: BOM
+    destination: DXB
+    departure_date: 2026-06-15
+    return_date: 2026-06-22                # remove this line for one-way
+    adults: 1
+    travel_class: ECONOMY                  # ECONOMY | PREMIUM_ECONOMY | BUSINESS | FIRST
+    currency: INR
+    alert_below: 25000                     # open a GitHub issue if total price drops below this
+    max_results: 5                         # how many of the cheapest offers to log
+
+  - id: del-sin-aug
+    nickname: "Delhi → Singapore (August)"
+    origin: DEL
+    destination: SIN
+    departure_date: 2026-08-10
+    return_date: 2026-08-20
+    adults: 2
+    travel_class: ECONOMY
+    currency: INR
+    alert_below: 60000
+    max_results: 5
+
+hotels:
+
+  - id: goa-dec
+    nickname: "Goa (December break)"
+    city_code: GOI                         # IATA city code
+    check_in: 2026-12-20
+    check_out: 2026-12-25
+    adults: 2
+    rooms: 1
+    currency: INR
+    alert_below: 8000                      # alert if total price drops below this
+    max_hotels: 10                         # how many hotels to query in this city
+
+  - id: jaipur-nov
+    nickname: "Jaipur (November weekend)"
+    city_code: JAI
+    check_in: 2026-11-14
+    check_out: 2026-11-16
+    adults: 2
+    rooms: 1
+    currency: INR
+    alert_below: 5000
+    max_hotels: 10
