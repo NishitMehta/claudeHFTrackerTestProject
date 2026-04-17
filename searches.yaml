@@ -27,8 +27,8 @@ flights:
     nickname: "Mumbai → Dubai (June trip)"
     departure_id: BOM
     arrival_id: DXB
-    outbound_date: 2026-06-15
-    return_date: 2026-06-22                # remove this line for one-way
+    outbound_date: "2026-06-15"
+    return_date: "2026-06-22"                # remove this line for one-way
     adults: 1
     travel_class: ECONOMY                  # ECONOMY | PREMIUM_ECONOMY | BUSINESS | FIRST
     currency: INR
@@ -39,8 +39,8 @@ flights:
     nickname: "Delhi → Singapore (August)"
     departure_id: DEL
     arrival_id: SIN
-    outbound_date: 2026-08-10
-    return_date: 2026-08-20
+    outbound_date: "2026-08-10"
+    return_date: "2026-08-20"
     adults: 2
     travel_class: ECONOMY
     currency: INR
@@ -56,8 +56,8 @@ hotels:
   - id: goa-dec
     nickname: "Goa (December break)"
     query: "hotels in Goa, India"
-    check_in: 2026-12-20
-    check_out: 2026-12-25
+    check_in: "2026-12-20"
+    check_out: "2026-12-25"
     adults: 2
     currency: INR
     alert_below: 8000
@@ -66,8 +66,8 @@ hotels:
   - id: jaipur-nov
     nickname: "Jaipur (November weekend)"
     query: "hotels in Jaipur, India"
-    check_in: 2026-11-14
-    check_out: 2026-11-16
+    check_in: "2026-11-14"
+    check_out: "2026-11-16"
     adults: 2
     currency: INR
     alert_below: 5000
