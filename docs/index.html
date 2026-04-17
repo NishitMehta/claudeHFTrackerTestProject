@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Travel Price Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root {
+    --ink: #1a1410;
+    --paper: #f4ede0;
+    --paper-dark: #ebe0cc;
+    --rule: #1a1410;
+    --accent: #c8401c;
+    --accent-soft: #e8a48e;
+    --good: #2d5a2d;
+    --bad: #c8401c;
+    --muted: #6b5d4e;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Fraunces', Georgia, serif;
+    font-feature-settings: "ss01", "ss02";
+  }
+  body {
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(200,64,28,.04) 0%, transparent 40%),
+      radial-gradient(circle at 80% 80%, rgba(45,90,45,.04) 0%, transparent 40%);
+    min-height: 100vh;
+    padding: 0 0 6rem 0;
+  }
+  .masthead {
+    border-bottom: 3px double var(--rule);
+    padding: 2.4rem 3rem 1.2rem 3rem;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .masthead h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin: 0;
+    line-height: 0.95;
+    font-style: italic;
+  }
+  .masthead .meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-align: right;
+  }
+  .container {
+    padding: 0 3rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .section-rule {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    margin: 3rem 0 1.5rem 0;
+  }
+  .section-rule h2 {
+    font-size: 0.85rem;
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    margin: 0;
+    white-space: nowrap;
+  }
+  .section-rule .line {
+    flex: 1;
+    height: 1px;
+    background: var(--rule);
+  }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 1.5rem;
+  }
+  .card {
+    background: var(--paper);
+    border: 1.5px solid var(--ink);
+    padding: 1.5rem;
+    position: relative;
+    transition: transform 0.15s ease;
+  }
+  .card:hover { transform: translateY(-2px); }
+  .card .nickname {
+    font-size: 1.4rem;
+    font-weight: 600;
+    line-height: 1.15;
+    margin: 0 0 0.25rem 0;
+    font-style: italic;
+  }
+  .card .id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    margin-bottom: 1rem;
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    margin: 1rem 0;
+  }
+  .stat {
+    padding: 0.7rem 0.5rem;
+    border-right: 1px solid var(--ink);
+    text-align: center;
+  }
+  .stat:last-child { border-right: none; }
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    margin-bottom: 0.25rem;
+  }
+  .stat-value {
+    font-size: 1.15rem;
+    font-weight: 600;
+  }
+  .stat-value.good { color: var(--good); }
+  .stat-value.bad { color: var(--bad); }
+  .chart-wrap {
+    position: relative;
+    height: 180px;
+    margin-top: 0.5rem;
+  }
+  .empty {
+    text-align: center;
+    padding: 4rem 2rem;
+    border: 1px dashed var(--rule);
+    color: var(--muted);
+  }
+  .empty h3 {
+    font-style: italic;
+    font-weight: 600;
+    font-size: 1.5rem;
+  }
+  footer {
+    text-align: center;
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--rule);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+  }
+  .delta-arrow { font-size: 0.85em; margin-right: 0.15em; }
+  @media (max-width: 600px) {
+    .masthead, .container { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <h1>Travel<br/>Price Tracker</h1>
+  <div class="meta">
+    Vol. 01 &middot; Issue 2026.107<br/>
+    Updated 2026-04-17 07:22 UTC<br/>
+    0 flights &middot; 0 hotels
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="section-rule">
+    <h2>✈ Flights</h2>
+    <div class="line"></div>
+  </div>
+
+  <div class="empty"><h3>No data yet.</h3><p>Add flight searches in <code>searches.yaml</code> and wait for the next collector run.</p></div>
+
+  <div class="section-rule">
+    <h2>🏨 Hotels</h2>
+    <div class="line"></div>
+  </div>
+
+  <div class="empty"><h3>No data yet.</h3><p>Add hotel searches in <code>searches.yaml</code> and wait for the next collector run.</p></div>
+
+  <footer>
+    Generated by collector &middot; Data via Amadeus
+  </footer>
+</div>
+
+<script>
+const flightSeries = [];
+const hotelSeries = [];
+
+function renderChart(canvasId, series, accentColor) {
+  const ctx = document.getElementById(canvasId);
+  if (!ctx) return;
+  new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: series.labels,
+      datasets: [{
+        data: series.data,
+        borderColor: accentColor,
+        backgroundColor: accentColor + '20',
+        borderWidth: 2,
+        fill: true,
+        tension: 0.25,
+        pointRadius: 3,
+        pointBackgroundColor: accentColor,
+        pointBorderColor: '#f4ede0',
+        pointBorderWidth: 1.5,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: '#1a1410',
+          titleFont: { family: 'JetBrains Mono', size: 11 },
+          bodyFont: { family: 'JetBrains Mono', size: 11 },
+          padding: 8,
+          callbacks: {
+            label: function(ctx) {
+              return ctx.parsed.y.toLocaleString() + ' ' + series.currency;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { font: { family: 'JetBrains Mono', size: 9 }, color: '#6b5d4e', maxRotation: 0 },
+          border: { color: '#1a1410' }
+        },
+        y: {
+          grid: { color: 'rgba(26,20,16,0.08)' },
+          ticks: {
+            font: { family: 'JetBrains Mono', size: 9 },
+            color: '#6b5d4e',
+            callback: v => v.toLocaleString()
+          },
+          border: { display: false }
+        }
+      }
+    }
+  });
+}
+
+flightSeries.forEach(s => renderChart('chart-f-' + s.id, s, '#c8401c'));
+hotelSeries.forEach(s => renderChart('chart-h-' + s.id, s, '#2d5a2d'));
+</script>
+</body>
+</html>
