@@ -252,8 +252,8 @@
 <header class="masthead">
   <h1>Travel<br/>Price Tracker</h1>
   <div class="meta">
-    Vol. 01 &middot; Issue 2026.107<br/>
-    Updated 2026-04-17 09:55 UTC<br/>
+    Vol. 01 &middot; Issue 2026.108<br/>
+    Updated 2026-04-18 05:21 UTC<br/>
     2 flights &middot; 2 hotels
   </div>
 </header>
@@ -269,10 +269,10 @@
   <div class="grid">
     <div class="card">
       <p class="nickname">Delhi → Singapore (August)</p>
-      <div class="id">del-sin-aug &middot; 1 sample</div>
+      <div class="id">del-sin-aug &middot; 2 samples</div>
       <div class="stats">
         <div class="stat"><div class="stat-label">Latest</div><div class="stat-value">44,110 INR</div></div>
-        <div class="stat"><div class="stat-label">Vs prev</div><span class="stat-value">—</span></div>
+        <div class="stat"><div class="stat-label">Vs prev</div><span class="stat-value">±0%</span></div>
         <div class="stat"><div class="stat-label">All-time min</div><div class="stat-value">44,110 INR</div></div>
       </div>
       <div class="chart-wrap"><canvas id="chart-f-del-sin-aug"></canvas></div>
@@ -281,11 +281,11 @@
 
     <div class="card">
       <p class="nickname">Mumbai → Dubai (June trip)</p>
-      <div class="id">bom-dxb-jun &middot; 1 sample</div>
+      <div class="id">bom-dxb-jun &middot; 2 samples</div>
       <div class="stats">
-        <div class="stat"><div class="stat-label">Latest</div><div class="stat-value">32,268 INR</div></div>
-        <div class="stat"><div class="stat-label">Vs prev</div><span class="stat-value">—</span></div>
-        <div class="stat"><div class="stat-label">All-time min</div><div class="stat-value">32,268 INR</div></div>
+        <div class="stat"><div class="stat-label">Latest</div><div class="stat-value">32,250 INR</div></div>
+        <div class="stat"><div class="stat-label">Vs prev</div><span class="stat-value good"><span class="delta-arrow">▼</span>0.1%</span></div>
+        <div class="stat"><div class="stat-label">All-time min</div><div class="stat-value">32,250 INR</div></div>
       </div>
       <div class="chart-wrap"><canvas id="chart-f-bom-dxb-jun"></canvas></div>
     </div>
@@ -299,10 +299,10 @@
   <div class="grid">
     <div class="card">
       <p class="nickname">Goa (December break)</p>
-      <div class="id">goa-dec &middot; 1 sample</div>
+      <div class="id">goa-dec &middot; 2 samples</div>
       <div class="stats">
-        <div class="stat"><div class="stat-label">Latest</div><div class="stat-value">24,596 INR</div></div>
-        <div class="stat"><div class="stat-label">Vs prev</div><span class="stat-value">—</span></div>
+        <div class="stat"><div class="stat-label">Latest</div><div class="stat-value">29,768 INR</div></div>
+        <div class="stat"><div class="stat-label">Vs prev</div><span class="stat-value bad"><span class="delta-arrow">▲</span>21.0%</span></div>
         <div class="stat"><div class="stat-label">All-time min</div><div class="stat-value">24,596 INR</div></div>
       </div>
       <div class="chart-wrap"><canvas id="chart-h-goa-dec"></canvas></div>
@@ -311,10 +311,10 @@
 
     <div class="card">
       <p class="nickname">Jaipur (November weekend)</p>
-      <div class="id">jaipur-nov &middot; 1 sample</div>
+      <div class="id">jaipur-nov &middot; 2 samples</div>
       <div class="stats">
         <div class="stat"><div class="stat-label">Latest</div><div class="stat-value">9,756 INR</div></div>
-        <div class="stat"><div class="stat-label">Vs prev</div><span class="stat-value">—</span></div>
+        <div class="stat"><div class="stat-label">Vs prev</div><span class="stat-value">±0%</span></div>
         <div class="stat"><div class="stat-label">All-time min</div><div class="stat-value">9,756 INR</div></div>
       </div>
       <div class="chart-wrap"><canvas id="chart-h-jaipur-nov"></canvas></div>
@@ -371,10 +371,10 @@
 </div>
 
 <script>
-const flightSeries = [{"id": "del-sin-aug", "labels": ["2026-04-17"], "data": [44110.0], "currency": "INR"}, {"id": "bom-dxb-jun", "labels": ["2026-04-17"], "data": [32268.0], "currency": "INR"}];
-const hotelSeries = [{"id": "goa-dec", "labels": ["2026-04-17"], "data": [24596.0], "currency": "INR"}, {"id": "jaipur-nov", "labels": ["2026-04-17"], "data": [9756.0], "currency": "INR"}];
+const flightSeries = [{"id": "del-sin-aug", "labels": ["2026-04-17", "2026-04-18"], "data": [44110.0, 44110.0], "currency": "INR"}, {"id": "bom-dxb-jun", "labels": ["2026-04-17", "2026-04-18"], "data": [32268.0, 32250.0], "currency": "INR"}];
+const hotelSeries = [{"id": "goa-dec", "labels": ["2026-04-17", "2026-04-18"], "data": [24596.0, 29768.0], "currency": "INR"}, {"id": "jaipur-nov", "labels": ["2026-04-17", "2026-04-18"], "data": [9756.0, 9756.0], "currency": "INR"}];
 const REPO_FULL = "NishitMehta/claudeHFTrackerTestProject";
-const CURRENT_YAML = "# =============================================================================\n# Travel Price Tracker \u2014 Searches Configuration\n# =============================================================================\n#\n# This file lists every flight and hotel search you want tracked.\n# The collector runs once a day, queries each one via SerpAPI (Google\n# Flights / Google Hotels), and appends results to the CSVs in data/.\n#\n# To add a new search, copy a block below and change the values.\n# To stop tracking something, delete the block (or comment it out with #).\n#\n# IMPORTANT \u2014 costs against your SerpAPI free tier (250 searches/month):\n#   - Each FLIGHT block = 1 API call per day  = ~30/month\n#   - Each HOTEL block  = 1 API call per day  = ~30/month\n# So you can safely run ~8 searches total before hitting the free limit.\n#\n# Dates must be YYYY-MM-DD and in the future.\n# Airport codes: BOM=Mumbai, DEL=Delhi, BLR=Bangalore, MAA=Chennai,\n#   AMD=Ahmedabad, GOI=Goa-Dabolim, GOX=Goa-Mopa, DXB=Dubai, SIN=Singapore,\n#   BKK=Bangkok, LHR=London, JFK=New York.\n#\n# =============================================================================\n\nflights:\n\n  - id: bom-dxb-jun                       # short unique id, no spaces\n    nickname: \"Mumbai \u2192 Dubai (June trip)\"\n    departure_id: BOM\n    arrival_id: DXB\n    outbound_date: 2026-06-15\n    return_date: 2026-06-22               # remove this line for one-way\n    adults: 1\n    travel_class: ECONOMY                  # ECONOMY | PREMIUM_ECONOMY | BUSINESS | FIRST\n    currency: INR\n    alert_below: 25000                     # open a GitHub Issue if total drops below this\n    max_results: 5                         # how many of the cheapest offers to log\n\n  - id: del-sin-aug\n    nickname: \"Delhi \u2192 Singapore (August)\"\n    departure_id: DEL\n    arrival_id: SIN\n    outbound_date: 2026-08-10\n    return_date: 2026-08-20\n    adults: 2\n    travel_class: ECONOMY\n    currency: INR\n    alert_below: 60000\n    max_results: 5\n\nhotels:\n\n  # Hotel queries are natural-language strings \u2014 be specific or general:\n  #   \"hotels in Goa, India\"             \u2190 whole-city search\n  #   \"hotels in Anjuna, Goa\"            \u2190 neighbourhood\n  #   \"Taj Resort & Convention Centre\"   \u2190 single property by name\n  - id: goa-dec\n    nickname: \"Goa (December break)\"\n    query: \"hotels in Goa, India\"\n    check_in: 2026-12-20\n    check_out: 2026-12-25\n    adults: 2\n    currency: INR\n    alert_below: 8000\n    max_results: 10\n\n  - id: jaipur-nov\n    nickname: \"Jaipur (November weekend)\"\n    query: \"hotels in Jaipur, India\"\n    check_in: 2026-11-14\n    check_out: 2026-11-16\n    adults: 2\n    currency: INR\n    alert_below: 5000\n    max_results: 10\n";
+const CURRENT_YAML = "# Edited from dashboard at 2026-04-17T10:03:43.003Z\nflights:\n  - id: bom-dxb-jun\n    nickname: Mumbai \u2192 Dubai (June trip)\n    departure_id: BOM\n    arrival_id: DXB\n    outbound_date: \"2026-06-15\"\n    return_date: \"2026-06-22\"\n    adults: 1\n    travel_class: ECONOMY\n    currency: INR\n    alert_below: 25000\n    max_results: 5\n  - id: del-sin-aug\n    nickname: Delhi \u2192 Singapore (August)\n    departure_id: DEL\n    arrival_id: SIN\n    outbound_date: \"2026-08-10\"\n    return_date: \"2026-08-20\"\n    adults: 2\n    travel_class: ECONOMY\n    currency: INR\n    alert_below: 60000\n    max_results: 5\nhotels:\n  - id: goa-dec\n    nickname: Goa (December break)\n    query: hotels in Goa, India\n    check_in: \"2026-12-20\"\n    check_out: \"2026-12-25\"\n    adults: 2\n    currency: INR\n    alert_below: 8000\n    max_results: 10\n  - id: jaipur-nov\n    nickname: Jaipur (November weekend)\n    query: hotels in Jaipur, India\n    check_in: \"2026-11-14\"\n    check_out: \"2026-11-16\"\n    adults: 2\n    currency: INR\n    alert_below: 5000\n    max_results: 10\n";
 const TOKEN_KEY = "tpt_github_token_v1";
 
 function renderChart(canvasId, series, accentColor) {
