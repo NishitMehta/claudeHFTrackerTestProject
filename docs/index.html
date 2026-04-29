@@ -252,8 +252,8 @@
 <header class="masthead">
   <h1>Travel<br/>Price Tracker</h1>
   <div class="meta">
-    Vol. 01 &middot; Issue 2026.118<br/>
-    Updated 2026-04-28 06:17 UTC<br/>
+    Vol. 01 &middot; Issue 2026.119<br/>
+    Updated 2026-04-29 06:11 UTC<br/>
     2 flights &middot; 2 hotels
   </div>
 </header>
@@ -269,7 +269,7 @@
   <div class="grid">
     <div class="card">
       <p class="nickname">Delhi → Singapore (August)</p>
-      <div class="id">del-sin-aug &middot; 12 samples</div>
+      <div class="id">del-sin-aug &middot; 13 samples</div>
       <div class="stats">
         <div class="stat"><div class="stat-label">Latest</div><div class="stat-value">41,666 INR</div></div>
         <div class="stat"><div class="stat-label">Vs prev</div><span class="stat-value">±0%</span></div>
@@ -281,10 +281,10 @@
 
     <div class="card">
       <p class="nickname">Mumbai → Dubai (June trip)</p>
-      <div class="id">bom-dxb-jun &middot; 12 samples</div>
+      <div class="id">bom-dxb-jun &middot; 13 samples</div>
       <div class="stats">
-        <div class="stat"><div class="stat-label">Latest</div><div class="stat-value">33,260 INR</div></div>
-        <div class="stat"><div class="stat-label">Vs prev</div><span class="stat-value bad"><span class="delta-arrow">▲</span>0.1%</span></div>
+        <div class="stat"><div class="stat-label">Latest</div><div class="stat-value">34,350 INR</div></div>
+        <div class="stat"><div class="stat-label">Vs prev</div><span class="stat-value bad"><span class="delta-arrow">▲</span>3.3%</span></div>
         <div class="stat"><div class="stat-label">All-time min</div><div class="stat-value">32,162 INR</div></div>
       </div>
       <div class="chart-wrap"><canvas id="chart-f-bom-dxb-jun"></canvas></div>
@@ -299,10 +299,10 @@
   <div class="grid">
     <div class="card">
       <p class="nickname">Goa (December break)</p>
-      <div class="id">goa-dec &middot; 12 samples</div>
+      <div class="id">goa-dec &middot; 13 samples</div>
       <div class="stats">
-        <div class="stat"><div class="stat-label">Latest</div><div class="stat-value">19,152 INR</div></div>
-        <div class="stat"><div class="stat-label">Vs prev</div><span class="stat-value bad"><span class="delta-arrow">▲</span>227.0%</span></div>
+        <div class="stat"><div class="stat-label">Latest</div><div class="stat-value">15,750 INR</div></div>
+        <div class="stat"><div class="stat-label">Vs prev</div><span class="stat-value good"><span class="delta-arrow">▼</span>17.8%</span></div>
         <div class="stat"><div class="stat-label">All-time min</div><div class="stat-value">5,857 INR</div></div>
       </div>
       <div class="chart-wrap"><canvas id="chart-h-goa-dec"></canvas></div>
@@ -311,10 +311,10 @@
 
     <div class="card">
       <p class="nickname">Jaipur (November weekend)</p>
-      <div class="id">jaipur-nov &middot; 12 samples</div>
+      <div class="id">jaipur-nov &middot; 13 samples</div>
       <div class="stats">
-        <div class="stat"><div class="stat-label">Latest</div><div class="stat-value">5,896 INR</div></div>
-        <div class="stat"><div class="stat-label">Vs prev</div><span class="stat-value good"><span class="delta-arrow">▼</span>39.6%</span></div>
+        <div class="stat"><div class="stat-label">Latest</div><div class="stat-value">10,290 INR</div></div>
+        <div class="stat"><div class="stat-label">Vs prev</div><span class="stat-value bad"><span class="delta-arrow">▲</span>74.5%</span></div>
         <div class="stat"><div class="stat-label">All-time min</div><div class="stat-value">2,752 INR</div></div>
       </div>
       <div class="chart-wrap"><canvas id="chart-h-jaipur-nov"></canvas></div>
@@ -371,8 +371,8 @@
 </div>
 
 <script>
-const flightSeries = [{"id": "del-sin-aug", "labels": ["2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28"], "data": [44110.0, 44110.0, 44064.0, 44064.0, 43854.0, 43998.0, 44154.0, 47588.0, 41666.0, 41666.0, 41666.0, 41666.0], "currency": "INR"}, {"id": "bom-dxb-jun", "labels": ["2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28"], "data": [32268.0, 32250.0, 32250.0, 32250.0, 32162.0, 32221.0, 33312.0, 33181.0, 33227.0, 33227.0, 33227.0, 33260.0], "currency": "INR"}];
-const hotelSeries = [{"id": "goa-dec", "labels": ["2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28"], "data": [24596.0, 29768.0, 24540.0, 25342.0, 14070.0, 6502.0, 6502.0, 24705.0, 15750.0, 15750.0, 5857.0, 19152.0], "currency": "INR"}, {"id": "jaipur-nov", "labels": ["2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28"], "data": [9756.0, 9756.0, 7865.0, 5896.0, 9777.0, 9777.0, 2752.0, 3360.0, 9756.0, 5896.0, 9756.0, 5896.0], "currency": "INR"}];
+const flightSeries = [{"id": "del-sin-aug", "labels": ["2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29"], "data": [44110.0, 44110.0, 44064.0, 44064.0, 43854.0, 43998.0, 44154.0, 47588.0, 41666.0, 41666.0, 41666.0, 41666.0, 41666.0], "currency": "INR"}, {"id": "bom-dxb-jun", "labels": ["2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29"], "data": [32268.0, 32250.0, 32250.0, 32250.0, 32162.0, 32221.0, 33312.0, 33181.0, 33227.0, 33227.0, 33227.0, 33260.0, 34350.0], "currency": "INR"}];
+const hotelSeries = [{"id": "goa-dec", "labels": ["2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29"], "data": [24596.0, 29768.0, 24540.0, 25342.0, 14070.0, 6502.0, 6502.0, 24705.0, 15750.0, 15750.0, 5857.0, 19152.0, 15750.0], "currency": "INR"}, {"id": "jaipur-nov", "labels": ["2026-04-17", "2026-04-18", "2026-04-19", "2026-04-20", "2026-04-21", "2026-04-22", "2026-04-23", "2026-04-24", "2026-04-25", "2026-04-26", "2026-04-27", "2026-04-28", "2026-04-29"], "data": [9756.0, 9756.0, 7865.0, 5896.0, 9777.0, 9777.0, 2752.0, 3360.0, 9756.0, 5896.0, 9756.0, 5896.0, 10290.0], "currency": "INR"}];
 const REPO_FULL = "NishitMehta/claudeHFTrackerTestProject";
 const CURRENT_YAML = "# Edited from dashboard at 2026-04-17T10:03:43.003Z\nflights:\n  - id: bom-dxb-jun\n    nickname: Mumbai \u2192 Dubai (June trip)\n    departure_id: BOM\n    arrival_id: DXB\n    outbound_date: \"2026-06-15\"\n    return_date: \"2026-06-22\"\n    adults: 1\n    travel_class: ECONOMY\n    currency: INR\n    alert_below: 25000\n    max_results: 5\n  - id: del-sin-aug\n    nickname: Delhi \u2192 Singapore (August)\n    departure_id: DEL\n    arrival_id: SIN\n    outbound_date: \"2026-08-10\"\n    return_date: \"2026-08-20\"\n    adults: 2\n    travel_class: ECONOMY\n    currency: INR\n    alert_below: 60000\n    max_results: 5\nhotels:\n  - id: goa-dec\n    nickname: Goa (December break)\n    query: hotels in Goa, India\n    check_in: \"2026-12-20\"\n    check_out: \"2026-12-25\"\n    adults: 2\n    currency: INR\n    alert_below: 8000\n    max_results: 10\n  - id: jaipur-nov\n    nickname: Jaipur (November weekend)\n    query: hotels in Jaipur, India\n    check_in: \"2026-11-14\"\n    check_out: \"2026-11-16\"\n    adults: 2\n    currency: INR\n    alert_below: 5000\n    max_results: 10\n";
 const TOKEN_KEY = "tpt_github_token_v1";
