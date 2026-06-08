@@ -398,3 +398,11 @@ timestamp,search_id,nickname,origin,destination,departure_date,return_date,rank,
 2026-06-07T07:40:18Z,del-sin-aug,Delhi → Singapore (August),DEL,SIN,2026-08-10,2026-08-20,1,62384.00,INR,Air India,0,365,2026-08-10 03:35,2026-08-10 12:10
 2026-06-07T07:40:18Z,del-sin-aug,Delhi → Singapore (August),DEL,SIN,2026-08-10,2026-08-20,2,67226.00,INR,IndiGo,0,370,2026-08-10 09:05,2026-08-10 17:45
 2026-06-07T07:40:18Z,del-sin-aug,Delhi → Singapore (August),DEL,SIN,2026-08-10,2026-08-20,3,90372.00,INR,Singapore Airlines,0,345,2026-08-10 21:55,2026-08-11 06:10
+2026-06-08T08:27:05Z,bom-dxb-jun,Mumbai → Dubai (June trip),BOM,DXB,2026-06-15,2026-06-22,1,34753.00,INR,flydubai,0,195,2026-06-15 05:20,2026-06-15 07:05
+2026-06-08T08:27:05Z,bom-dxb-jun,Mumbai → Dubai (June trip),BOM,DXB,2026-06-15,2026-06-22,2,36173.00,INR,Air India,0,200,2026-06-15 05:35,2026-06-15 07:25
+2026-06-08T08:27:05Z,bom-dxb-jun,Mumbai → Dubai (June trip),BOM,DXB,2026-06-15,2026-06-22,3,38166.00,INR,SpiceJet,0,205,2026-06-15 08:15,2026-06-15 10:10
+2026-06-08T08:27:05Z,bom-dxb-jun,Mumbai → Dubai (June trip),BOM,DXB,2026-06-15,2026-06-22,4,38339.00,INR,IndiGo,0,185,2026-06-15 15:05,2026-06-15 16:40
+2026-06-08T08:27:05Z,bom-dxb-jun,Mumbai → Dubai (June trip),BOM,DXB,2026-06-15,2026-06-22,5,43746.00,INR,Emirates,0,185,2026-06-15 04:25,2026-06-15 06:00
+2026-06-08T08:27:05Z,del-sin-aug,Delhi → Singapore (August),DEL,SIN,2026-08-10,2026-08-20,1,62384.00,INR,Air India,0,365,2026-08-10 03:35,2026-08-10 12:10
+2026-06-08T08:27:05Z,del-sin-aug,Delhi → Singapore (August),DEL,SIN,2026-08-10,2026-08-20,2,67226.00,INR,IndiGo,0,370,2026-08-10 09:05,2026-08-10 17:45
+2026-06-08T08:27:05Z,del-sin-aug,Delhi → Singapore (August),DEL,SIN,2026-08-10,2026-08-20,3,96342.00,INR,Singapore Airlines,0,345,2026-08-10 21:55,2026-08-11 06:10
